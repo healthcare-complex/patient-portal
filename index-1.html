@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مجمع العناية بصحتك الطبي</title>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--tx:#14212b;--mu:#5d6b77;--pr:#0b7a75;--pt:#fff;--bd:#d9e2e8;--er:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#10181d;--card:#192329;--tx:#e8eef2;--mu:#9aa9b4;--pr:#3cc2b9;--pt:#06201e;--bd:#2c3b44;--er:#ff8a80}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 system-ui,"Segoe UI",Tahoma,Arial,sans-serif}
+header{background:var(--pr);color:var(--pt);padding:16px;text-align:center;font-weight:700;font-size:18px}
+main{max-width:640px;margin:0 auto;padding:12px}
+nav{display:flex;gap:8px;margin-bottom:12px}
+nav button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;cursor:pointer}
+nav button.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+h2{margin:0 0 8px;font-size:17px}label{display:block;font-size:14px;color:var(--mu);margin-top:8px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:80px}
+.btn{margin-top:12px;width:100%;padding:12px;border:0;border-radius:10px;background:var(--pr);color:var(--pt);font:inherit;font-weight:700;cursor:pointer}
+.msg{margin-top:8px;font-size:14px;color:var(--er)}.ok{color:var(--pr)}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--pr);color:var(--pt);font-size:13px}
+.sc{overflow-x:auto}table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
+th,td{border-bottom:1px solid var(--bd);padding:6px;text-align:start}th{color:var(--mu)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.mu{color:var(--mu);font-size:14px}
+a{color:var(--pr)}img.r{max-width:100%;border-radius:8px;margin-top:8px}[hidden]{display:none!important}
+</style></head><body>
+<header>🏥 مجمع العناية بصحتك الطبي</header>
+<main>
+<div id="auth" class="card">
+ <h2 id="at">تسجيل الدخول</h2>
+ <label>البريد الإلكتروني</label><input id="em" type="email" dir="ltr" autocomplete="email">
+ <label>كلمة المرور</label><input id="pw" type="password" dir="ltr" autocomplete="current-password">
+ <button class="btn" id="go">دخول</button>
+ <p class="mu"><a href="#" id="sw">ليس لديك حساب؟ سجّل الآن</a></p>
+ <p class="mu" id="hint" hidden>سجّل بنفس البريد الذي سجّله لك موظف الاستقبال في ملفك.</p>
+ <div class="msg" id="am"></div>
+</div>
+
+<div id="app" hidden>
+ <nav><button id="tP" class="on">ملفي</button><button id="tS" hidden>الموظفون</button><button id="out">خروج</button></nav>
+ <div id="verify" class="card" hidden>
+  <h2>أكّد بريدك الإلكتروني</h2>
+  <p>أرسلنا رابط تأكيد إلى بريدك. افتحه ثم اضغط الزر أدناه.</p>
+  <button class="btn" id="chk">لقد أكدت بريدي</button>
+  <button class="btn" id="rs" style="background:var(--card);color:var(--tx);border:1px solid var(--bd)">إعادة إرسال الرابط</button>
+  <div class="msg" id="vm"></div>
+ </div>
+ <section id="pv"></section>
+ <section id="st" hidden>
+  <div class="card"><h2>إضافة مريض جديد</h2>
+   <label>الاسم</label><input id="pn">
+   <label>رقم الهوية أو الإقامة</label><input id="pi" inputmode="numeric" dir="ltr">
+   <label>بريد المريض</label><input id="pe" type="email" dir="ltr">
+   <button class="btn" id="addP">حفظ المريض</button><div class="msg" id="m1"></div></div>
+  <div class="card"><h2>إضافة نتيجة</h2>
+   <label>المريض</label><select id="ps"></select>
+   <label>النوع</label><select id="rt"><option value="lab">تحليل</option><option value="rad">أشعة</option></select>
+   <label>العنوان</label><input id="rti" placeholder="مثال: صورة دم كاملة">
+   <label>التاريخ</label><input id="rd" type="date">
+   <label>القيم (سطر لكل فحص: الاسم | القيمة | الوحدة | الطبيعي)</label>
+   <textarea id="rv" dir="ltr" placeholder="Hemoglobin | 13.5 | g/dL | 12-16"></textarea>
+   <label>ملاحظات أو تقرير الأشعة (اختياري)</label><textarea id="rn"></textarea>
+   <label>ملف PDF أو صورة (اختياري، حتى 600 كيلوبايت تقريباً، والصور تُضغط تلقائياً)</label><input id="rf" type="file" accept="application/pdf,image/*">
+   <button class="btn" id="addR">حفظ النتيجة</button><div class="msg" id="m2"></div></div>
+ </section>
+</div>
+</main>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import{getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,sendEmailVerification,signOut}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import{getFirestore,doc,getDoc,getDocs,addDoc,collection,query,where,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyC4_ET8wThkta8aFJ2fXIm1v8N_amWzZDk",
+ authDomain:"your-healthcare-medical.firebaseapp.com",
+ projectId:"your-healthcare-medical",
+ storageBucket:"your-healthcare-medical.firebasestorage.app",
+ messagingSenderId:"987954617944",
+ appId:"1:987954617944:web:fb253f3c86e8322906f42d"
+};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ERR={'auth/invalid-credential':'البريد أو كلمة المرور غير صحيحة','auth/email-already-in-use':'هذا البريد مسجل مسبقاً','auth/weak-password':'كلمة المرور ضعيفة (6 أحرف على الأقل)','auth/invalid-email':'البريد غير صحيح','auth/too-many-requests':'محاولات كثيرة، حاول لاحقاً','auth/operation-not-allowed':'تسجيل الدخول بالبريد غير مفعّل','auth/unauthorized-domain':'هذا الموقع غير مضاف في النطاقات المصرح بها في Firebase','auth/network-request-failed':'تحقق من الاتصال بالإنترنت'};
+const msg=e=>ERR[e&&e.code]||('حدث خطأ: '+((e&&(e.code||e.message))||''));
+const mask=s=>{s=String(s||'');return s.length>4?'••••••'+s.slice(-4):s};
+let mode='login',isStaff=false;
+
+$('#sw').onclick=e=>{e.preventDefault();mode=mode==='login'?'reg':'login';
+ $('#at').textContent=mode==='login'?'تسجيل الدخول':'إنشاء حساب';
+ $('#go').textContent=mode==='login'?'دخول':'تسجيل';
+ $('#sw').textContent=mode==='login'?'ليس لديك حساب؟ سجّل الآن':'لديك حساب؟ سجّل الدخول';
+ $('#hint').hidden=mode==='login';$('#am').textContent=''};
+$('#go').onclick=async()=>{
+ const m=$('#am');m.className='msg';m.textContent='';
+ const e=$('#em').value.trim().toLowerCase(),p=$('#pw').value;
+ if(!e||!p){m.textContent='اكتب البريد وكلمة المرور';return}
+ try{
+  if(mode==='reg'){const c=await createUserWithEmailAndPassword(auth,e,p);await sendEmailVerification(c.user)}
+  else await signInWithEmailAndPassword(auth,e,p);
+ }catch(x){m.textContent=msg(x)}
+};
+$('#out').onclick=()=>signOut(auth);
+$('#rs').onclick=async()=>{try{await sendEmailVerification(auth.currentUser);$('#vm').className='msg ok';$('#vm').textContent='تم إرسال الرابط'}catch(x){$('#vm').className='msg';$('#vm').textContent=msg(x)}};
+$('#chk').onclick=async()=>{const u=auth.currentUser;await u.reload();await u.getIdToken(true);
+ if(u.emailVerified)render(u);else{$('#vm').className='msg';$('#vm').textContent='لم يتم التأكيد بعد، افتح الرابط في بريدك أولاً'}};
+const tab=s=>{$('#pv').hidden=s;$('#st').hidden=!s;$('#tP').classList.toggle('on',!s);$('#tS').classList.toggle('on',s)};
+$('#tP').onclick=()=>tab(false);$('#tS').onclick=()=>tab(true);
+
+onAuthStateChanged(auth,async u=>{
+ $('#auth').hidden=!!u;$('#app').hidden=!u;
+ if(!u){$('#pv').innerHTML='';return}
+ isStaff=false;
+ try{isStaff=(await getDoc(doc(db,'staff',u.uid))).exists()}catch(e){}
+ $('#tS').hidden=!isStaff;
+ render(u);
+});
+async function render(u){
+ tab(false);
+ const ok=u.emailVerified||isStaff;
+ $('#verify').hidden=ok;$('#pv').hidden=!ok;
+ if(ok&&!isStaff)loadFile(u);
+ if(isStaff){tab(true);loadPatients()}
+}
+async function loadFile(u){
+ const box=$('#pv');box.innerHTML='<div class="card mu">جارٍ التحميل...</div>';
+ try{
+  const s=await getDocs(query(collection(db,'patients'),where('email','==',u.email.toLowerCase())));
+  if(s.empty){box.innerHTML='<div class="card">لا يوجد ملف طبي مرتبط بهذا البريد. تواصل مع استقبال المجمع.</div>';return}
+  let h='';
+  for(const p of s.docs){
+   const d=p.data();
+   h+='<div class="card"><h2>'+esc(d.name)+'</h2><div class="mu">رقم الهوية: '+esc(mask(d.idNumber))+'</div></div>';
+   const r=await getDocs(collection(db,'patients',p.id,'results'));
+   const list=r.docs.map(x=>x.data()).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+   if(!list.length)h+='<div class="card mu">لا توجد نتائج بعد.</div>';
+   list.forEach(x=>{
+    h+='<div class="card"><div class="row"><b>'+esc(x.title)+'</b><span class="badge">'+(x.type==='rad'?'أشعة':'تحليل')+'</span></div><div class="mu">'+esc(x.date||'')+'</div>';
+    if(x.values&&x.values.length)h+='<div class="sc"><table><tr><th>الفحص</th><th>النتيجة</th><th>الوحدة</th><th>الطبيعي</th></tr>'+x.values.map(v=>'<tr><td>'+esc(v.n)+'</td><td>'+esc(v.v)+'</td><td>'+esc(v.u)+'</td><td>'+esc(v.r)+'</td></tr>').join('')+'</table></div>';
+    if(x.notes)h+='<p>'+esc(x.notes)+'</p>';
+    if(x.fileData){h+=(x.fileType||'').startsWith('image/')?'<img class="r" src="'+esc(x.fileData)+'" alt="">':'<p><a href="'+esc(x.fileData)+'" download="'+esc(x.fileName||'file.pdf')+'">تحميل الملف المرفق</a></p>'}
+    h+='</div>';
+   });
+  }
+  box.innerHTML=h;
+ }catch(e){box.innerHTML='<div class="card msg">تعذر تحميل الملف</div>'}
+}
+async function loadPatients(){
+ try{
+  const s=await getDocs(collection(db,'patients'));
+  $('#ps').innerHTML=s.docs.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.data().name)+' - '+esc(x.data().email)+'</option>').join('')||'<option value="">لا يوجد مرضى</option>';
+ }catch(e){}
+}
+$('#addP').onclick=async()=>{
+ const m=$('#m1');m.className='msg';m.textContent='';
+ const n=$('#pn').value.trim(),i=$('#pi').value.trim(),e=$('#pe').value.trim().toLowerCase();
+ if(!n||!i||!e){m.textContent='املأ كل الخانات';return}
+ try{await addDoc(collection(db,'patients'),{name:n,idNumber:i,email:e,createdAt:serverTimestamp()});
+  m.className='msg ok';m.textContent='تم الحفظ';['pn','pi','pe'].forEach(k=>$('#'+k).value='');loadPatients()}
+ catch(x){m.textContent=msg(x)}
+};
+const rd=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)});
+async function prep(f){
+ const MAX=620000;
+ if(f.type==='application/pdf'){
+  if(f.size>MAX)throw new Error('ملف PDF أكبر من الحد المسموح (600 كيلوبايت). صغّر حجمه أو ارفع صورة بدلاً منه');
+  return{data:await rd(f),type:f.type,name:f.name};
+ }
+ if(!f.type.startsWith('image/'))throw new Error('نوع الملف غير مدعوم');
+ const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(f)});
+ let s=Math.min(1,1600/Math.max(img.width,img.height)),q=0.8;
+ for(let k=0;k<8;k++){
+  const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  const out=c.toDataURL('image/jpeg',q);
+  if(out.length*0.75<MAX)return{data:out,type:'image/jpeg',name:f.name};
+  s*=0.8;q=Math.max(0.5,q-0.07);
+ }
+ throw new Error('تعذر ضغط الصورة للحجم المسموح');
+}
+$('#addR').onclick=async()=>{
+ const m=$('#m2');m.className='msg';m.textContent='';
+ const pid=$('#ps').value,t=$('#rti').value.trim();
+ if(!pid||!t){m.textContent='اختر المريض واكتب عنوان النتيجة';return}
+ const values=$('#rv').value.split('\n').map(l=>l.split('|').map(c=>c.trim())).filter(a=>a[0]&&a.length>1).map(a=>({n:a[0],v:a[1]||'',u:a[2]||'',r:a[3]||''}));
+ try{
+  const f=$('#rf').files[0];
+  const o={type:$('#rt').value,title:t,date:$('#rd').value,values,notes:$('#rn').value.trim(),createdAt:serverTimestamp()};
+  if(f){const fd=await prep(f);o.fileData=fd.data;o.fileType=fd.type;o.fileName=fd.name}
+  await addDoc(collection(db,'patients',pid,'results'),o);
+  m.className='msg ok';m.textContent='تم الحفظ';['rti','rv','rn','rf'].forEach(k=>$('#'+k).value='')}
+ catch(x){m.textContent=msg(x)}
+};
+</script></body></html>
